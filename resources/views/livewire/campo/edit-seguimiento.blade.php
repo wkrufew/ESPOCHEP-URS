@@ -193,5 +193,8 @@
                 Actualizar {{ $tipo }}
             </x-button>
         </div>
+        <button type="button" wire:click="save" wire:confirm.prompt="Are you sure?\n\nType DELETE to confirm|DELETE">
+            Prueba
+        </button>
     </div>
 </div>

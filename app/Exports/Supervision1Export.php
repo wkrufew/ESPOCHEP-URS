@@ -9,9 +9,13 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class Supervision1Export implements FromCollection, ShouldAutoSize, WithHeadings
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
+    protected $phase;
+
+    public function __construct($phase)
+    {
+        $this->phase = $phase;
+    }
+
     public function collection()
     {
         return Seguimiento::where('tipo', 'Supervision')
@@ -19,6 +23,7 @@ class Supervision1Export implements FromCollection, ShouldAutoSize, WithHeadings
             ->leftJoin('certificados', 'seguimientos.certificado_id', '=', 'certificados.id')
             ->join('users', 'seguimientos.user_id', '=', 'users.id') // Agrega la relación con users
             ->leftJoin('equipments', 'users.equipment_id', '=', 'equipments.id')
+            ->where('plannings.phase_id', '=', $this->phase->id)
             ->orderBy('plannings.codigo_manzana')
             ->orderBy('seguimientos.fecha_seguimiento')
             ->select([

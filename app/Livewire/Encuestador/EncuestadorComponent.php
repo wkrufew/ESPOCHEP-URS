@@ -17,6 +17,14 @@ class EncuestadorComponent extends Component
         $this->resetPage();
     }
 
+    public function delete($id)
+    {
+        //dd($id);    
+        $cobertura = Worker::find($id);
+        $cobertura->delete();
+        session()->flash('message', 'Cobertura eliminada correctamente.');
+    }
+
     #[Layout('layouts.encuestador')]
     public function render()
     {

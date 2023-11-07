@@ -9,9 +9,13 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class Seguimiento1Export implements FromCollection, ShouldAutoSize, WithHeadings
 {
-    /**
-     * @return \Illuminate\Support\Collection
-     */
+    protected $phase;
+
+    public function __construct($phase)
+    {
+        $this->phase = $phase;
+    }
+    
     public function collection()
     {
         return Seguimiento::where('tipo', 'Seguimiento')
@@ -19,6 +23,7 @@ class Seguimiento1Export implements FromCollection, ShouldAutoSize, WithHeadings
             ->leftJoin('certificados', 'seguimientos.certificado_id', '=', 'certificados.id')
             ->join('users', 'seguimientos.user_id', '=', 'users.id') // Agrega la relación con users
             ->leftJoin('equipments', 'users.equipment_id', '=', 'equipments.id')
+            ->where('plannings.phase_id', '=', $this->phase->id)
             ->orderBy('plannings.codigo_manzana')
             ->orderBy('seguimientos.fecha_seguimiento')
             ->select([
@@ -68,4 +73,51 @@ class Seguimiento1Export implements FromCollection, ShouldAutoSize, WithHeadings
             /* 'Fecha de Creación', */
         ];
     }
+
+    /* 
+    public function collection()
+    {
+        return Seguimiento::where('tipo', 'Seguimiento')
+            ->join('plannings', 'seguimientos.planning_id', '=', 'plannings.id')
+            ->leftJoin('certificados', 'seguimientos.certificado_id', '=', 'certificados.id')
+            ->join('users', 'seguimientos.user_id', '=', 'users.id') // Agrega la relación con users
+            ->orderBy('plannings.codigo_manzana')
+            ->orderBy('seguimientos.fecha_seguimiento')
+            ->select([
+                'seguimientos.fecha_seguimiento',
+                'seguimientos.tipo',
+                'seguimientos.observacion',
+                'seguimientos.registro_nombres',
+                'seguimientos.registro_sexo',
+                'seguimientos.registro_nacimiento',
+                'seguimientos.registro_cedula',
+                'seguimientos.registro_aparentesco_hogar',
+                'seguimientos.registro_nucleos',
+                'seguimientos.registro_aparentesco_nucleo',
+                'certificados.code', // Campo de certificado
+                'users.name as nombre_usuario', // Nombre del usuario
+                'seguimientos.created_at', // Campo created_at de seguimientos
+            ])
+            ->get();
+    }
+
+    public function headings(): array
+    {
+        return [
+            'Fecha de Seguimiento',
+            'Tipo',
+            'Observación',
+            'Nombres',
+            'Sexo',
+            'Fecha de Nacimiento',
+            'Cédula',
+            'Aparentesco Hogar',
+            'Núcleos',
+            'Aparentesco Núcleo',
+            'Código de Certificado', // Campo de certificado
+            'Nombre de Usuario', // Nombre del usuario
+            'Fecha de Creación',
+        ];
+    }
+    */
 }

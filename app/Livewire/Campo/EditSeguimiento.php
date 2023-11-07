@@ -91,7 +91,7 @@ class EditSeguimiento extends Component
 
         $this->dispatch('saved');
 
-        return redirect()->route('campo.coberturas.index');
+        return redirect()->route('campo.seguimientos.index');
     }
 
     #[Layout('layouts.campo')]
